@@ -340,6 +340,7 @@ namespace RaidCrawler
 
         private async Task AdvanceDate(CancellationToken token)
         {
+            
             ConnectionStatusText.Text = "Changing date...";
             int BaseDelay = (int)Settings.Default.CfgBaseDelay;
             await Click(LSTICK, 0_050 + BaseDelay, token).ConfigureAwait(false); // Sometimes it seems like the first command doesn't go through so send this just in case
@@ -370,6 +371,7 @@ namespace RaidCrawler
         {
             if (SwitchConnection.Connected)
             {
+                await SwitchConnection.SendAsync(SwitchCommand.DetachController(), CancellationToken.None);
                 ButtonReadRaids.Enabled = false;
                 ButtonAdvanceDate.Enabled = false;
                 _WindowState = WindowState;
@@ -385,7 +387,7 @@ namespace RaidCrawler
                     Activate();
                 }
                 if (Settings.Default.CfgEnableAlertWindow) MessageBox.Show(Settings.Default.CfgAlertWindowMessage, "Result found!", MessageBoxButtons.OK);
-
+                await SwitchConnection.SendAsync(SwitchCommand.DetachController(), CancellationToken.None).ConfigureAwait(false);
                 ButtonReadRaids.Enabled = true;
                 ButtonAdvanceDate.Enabled = true;
             }
